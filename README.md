@@ -1,6 +1,6 @@
-# mycihe_app
+# project_2
 
-A new Flutter project.
+A new Flutter Project for MyCIHE
 
 ## Getting Started
 
