@@ -1,0 +1,208 @@
+import 'package:flutter/material.dart';
+import '../composemessage.dart';
+import '../notification.dart';
+import '../profile.dart';
+import '../settings_page.dart';
+import '../ViewMessage.dart'; // <-- Import ChatDetailPage
+
+class AdminHomePage extends StatefulWidget {
+  final String adminName;
+  const AdminHomePage({super.key, required this.adminName});
+
+  @override
+  State<AdminHomePage> createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: 100,
+        backgroundColor: const Color(0xFF1A3B5D),
+        elevation: 0,
+        title: const Text(
+          "Chats",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0, right: 8.0),
+            child: Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications,
+                      color: Colors.white, size: 28),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const NotificationPage()),
+                    );
+                  },
+                ),
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Text(
+                      "5",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: const [
+          _ChatItem(
+            imagePath: "assets/images/teacher1.png",
+            email: "ayaz.raza@cihe.edu.au",
+            message:
+            "Hello Admin, I hope you are doing well. I just wanted to give you an update/check in regarding the students.",
+            time: "10 min",
+            unreadCount: 1,
+          ),
+          _ChatItem(
+            imagePath: "assets/images/teacher2.png",
+            email: "alma.lawson@cihe.edu.au",
+            message:
+            "Hello Admin, I need your help with an issue regarding my account.",
+            time: "1 hour",
+            unreadCount: 3,
+          ),
+          _ChatItem(
+            imagePath: "assets/images/teacher3.png",
+            email: "sunil@cihe.edu.au",
+            message: "Please let me know as soon as asap",
+            time: "30 min",
+            unreadCount: 1,
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: const Color(0xFF1A3B5D),
+        unselectedItemColor: Colors.grey,
+        currentIndex: _currentIndex,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.inbox), label: "Inbox"),
+          BottomNavigationBarItem(icon: Icon(Icons.create), label: "Compose"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+        ],
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ComposeMessagePage()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AdminProfilePage()),
+            );
+          } else if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _ChatItem extends StatelessWidget {
+  final String imagePath;
+  final String email;
+  final String message;
+  final String time;
+  final int unreadCount;
+
+  const _ChatItem({
+    required this.imagePath,
+    required this.email,
+    required this.message,
+    required this.time,
+    required this.unreadCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to ChatDetailPage when chat item is tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ChatDetailPage()),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: AssetImage(imagePath),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    email,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    message,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                Text(time, style: const TextStyle(color: Colors.grey)),
+                if (unreadCount > 0)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      unreadCount.toString(),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
